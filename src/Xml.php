@@ -1,5 +1,5 @@
 <?php
-namespace minphp\Xml;
+namespace Minphp\Xml;
 
 /**
  * Provides helper methods for creating XML documents from arrays and objects
@@ -14,7 +14,7 @@ class Xml
      * @var string The default node for an element
      */
     public $root_node = "result";
-    
+
     /**
      * Converts special characters with special meaning in XML to their entity
      * equivalent.
@@ -26,7 +26,7 @@ class Xml
     {
         static $search_chars = array();
         static $replace_chars = array();
-        
+
         if (empty($search_chars)) {
             // Replace accepted whitespace characters. All other low ordered bytes are
             // invalid in XML 1.0
@@ -41,14 +41,14 @@ class Xml
                     $replace_chars[] = null;
                 }
             }
-            
+
             $search_chars = array_merge(array("&", "<", ">", "\"", "`"), $search_chars);
             $replace_chars = array_merge(array("&amp;", "&lt;", "&gt;", "&quot;", "&apos;"), $replace_chars);
         }
-    
+
         return str_replace($search_chars, $replace_chars, $str);
     }
-    
+
     /**
      * Convert the given array into an XML document
      *
@@ -60,10 +60,10 @@ class Xml
     {
         $xml = "<?xml version=\"1.0\" encoding=\"" . $encoding . "\" ?>";
         $xml .= $this->buildXMLSegment($vars, $this->root_node);
-    
+
         return $xml;
     }
-    
+
     /**
      * Recursively convert the array into an XML structure segment
      *
@@ -76,26 +76,26 @@ class Xml
     {
         $xml = "";
         $tab = $this->tab;
-        
+
         if (is_numeric($root_node)) {
             $root_node = $this->root_node;
         }
-        
+
         if (is_object($value)) {
             $value = (array)$value;
         }
-        
+
         if (is_array($value)) {
             foreach ($value as $key => $value2) {
                 // Remove any illegal tag characters
                 $key = preg_replace("/[^a-z0-9_:.-]/i", "", $key);
                 // Recurse
                 $sub = $this->buildXmlSegment($value2, $key, ++$tab_count);
-                
+
                 $xml .= "\n";
-                
+
                 $break = is_array($value2) || is_object($value2);
-                
+
                 // If numeric, wrap element with parent's tag
                 if (is_numeric($key)) {
                     $xml .= str_repeat($tab, $tab_count-1) . "<" . $root_node . ">"
@@ -126,7 +126,7 @@ class Xml
         } else {
             $xml .= $this->xmlEntities($value);
         }
-        
+
         return $xml;
     }
 }

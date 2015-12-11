@@ -1,15 +1,16 @@
 <?php
-namespace minphp\Xml;
+namespace Minphp\Xml\Tests;
 
-use \PHPUnit_Framework_TestCase;
+use PHPUnit_Framework_TestCase;
+use Minphp\Xml\Xml;
 
 /**
- * @coversDefaultClass \minphp\Xml\Xml
+ * @coversDefaultClass \Minphp\Xml\Xml
  */
 class XmlTest extends PHPUnit_Framework_TestCase
 {
     private $xml;
-    
+
     public function setUp()
     {
         $this->xml = new Xml();
@@ -27,7 +28,7 @@ class XmlTest extends PHPUnit_Framework_TestCase
         $this->assertEquals('&quot;', $this->xml->xmlEntities('"'));
         $this->assertEquals('&apos;', $this->xml->xmlEntities('`'));
     }
-    
+
     /**
      * @covers ::makeXml
      * @covers ::buildXmlSegment
@@ -44,22 +45,9 @@ class XmlTest extends PHPUnit_Framework_TestCase
                 'other' => array('item' => array(1, 2, 3)),
             )
         );
-        $result =<<< XML
-<?xml version="1.0" encoding="UTF-8" ?>
-<section>
-	<contents>
-		<item1>1</item1>
-		<item2>two</item2>
-		<item4 />
-	</contents>
-	<other>
-		
-		<item>1</item>
-		<item>2</item>
-		<item>3</item>
-	</other>
-</section>
-XML;
-        $this->assertEquals($result, $this->xml->makeXml($data));
+        $this->assertEquals(
+            file_get_contents(__DIR__ . '/Fixtures/nested_array.xml'),
+            $this->xml->makeXml($data)
+        );
     }
 }
